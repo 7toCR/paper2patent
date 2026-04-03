@@ -1,3 +1,11 @@
+> **© 2024-present [你的 GitHub 用户名] · All Rights Reserved**
+>
+> **欢迎免费公开使用，但严禁将本项目直接复制到其他仓库并声称是你的原创成果。如需引用或参考，请注明原始来源并链接回本仓库。**
+>
+> 本项目基于 [MIT License](LICENSE) 开源。
+
+---
+
 > Make AI Writing Better for Everyone
 
 ## 📖 为什么做这个项目
@@ -904,4 +912,15 @@
 [在此处粘贴你的论文原文或者粘贴论文文件]
 ````
 
+---
+
+# 致谢 / Acknowledgments
+
+本项目的 README 结构与内容参考了 [awesome-ai-research-writing](https://github.com/Leey21/awesome-ai-research-writing)，感谢作者的整理与分享。本项目的部分内容受到了该仓库的启发。
+
+---
+
+# 其他说明
+
+本项目的 LICENSE 文件采用 MIT License。
 
