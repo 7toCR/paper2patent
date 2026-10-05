@@ -1,54 +1,129 @@
+<div align="center">
+
+# Paper2Patent
+
+**面向科研成果转化的论文转专利工具：Prompt 模板 + AI Skill，辅助撰写中国发明专利申请文件**
+
+*Make AI Writing Better for Everyone*
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+
+[快速开始](#快速开始) · [paper2patent Skill](#paper2patent-skill) · [Prompt 模板](#prompt-模板) · [使用须知](#使用须知) · [更新记录](CHANGELOG.md)
+
+</div>
+
 > **© 2026-present [7toCR] · All Rights Reserved**
 >
 > **欢迎免费公开使用，但严禁将本项目直接复制到其他仓库并声称是你的原创成果。如需引用或参考，请注明原始来源并链接回本仓库。**
 >
-> 本项目基于 [MIT License](LICENSE) 开源。
+> 本项目基于 [MIT License](LICENSE) 开源，社区使用规范见 [CLAUSE.md](CLAUSE.md)。
 
----
+## 为什么做这个项目
 
-> Make AI Writing Better for Everyone
+论文证明学术贡献，专利保护技术成果。但权利要求怎么布局、说明书写到什么程度才算充分公开、附图有哪些规范，对科研人员来说往往要从零摸索。我们调研了高校科研团队和企业研究院的专利工程师，把论文转专利的经验整理成可以直接使用的模板和工具，帮助你把论文整理成一份可以交给专利代理师审核的申请草稿。
 
-## 📖 为什么做这个项目
+## 能做什么
 
-当你熬夜肝完一篇顶会论文，满心欢喜准备投稿时，是否也在发愁：这项成果能不能转化成专利？专利该怎么写？权利要求怎么组织？说明书有什么规范？
+| 能力 | 说明 |
+|---|---|
+| 📝 五部分申请文本 | 说明书摘要、摘要附图、权利要求书、说明书、说明书附图 |
+| ⚖️ 权利要求布局 | 独立权利要求只写必要技术特征，从属权利要求一项一机制；方法、装置、电子设备、存储介质成套 |
+| 🤝 忠实原文 | 技术内容只来自论文；论文没给的信息标为【待补充】，不编造 |
+| 📐 专利附图 | 黑白线条流程图、框图，支持分支、判断、回环和附图标记 |
+| ✅ 自动检查 | 禁用词、单句号、引用关系、引用基础、摘要字数、附图编号与附图标记一致性等 |
+| ⚠️ 风险与缺口 | 论文公开与新颖性、AI/算法发明的客体问题、充分公开核查与待补充材料清单 |
 
-在学术圈，将研究成果转化为知识产权保护正变得越来越重要——论文是学术贡献的证明，专利才是技术的法律护城河。然而，专利撰写有着极高的专业门槛：法律文本规范、权利要求布局、技术效果论证……这些对于科研人员来说，往往是从零摸索的漫长过程。我们不想看到好的研究因为不懂专利撰写而错失保护机会。
+撰写依据：《专利法》（2020年修正）、《专利法实施细则》（2023年修订）、《专利审查指南》（2026年1月1日施行版）。
 
-## 🎯 我们做了什么
+## 快速开始
 
-我们调研了**高校科研团队**、**企业研究院**的专利工程师和科研人员，总结了他们将论文转化为专利时的核心痛点和实战经验，将这套**论文转专利的智能转换模板**开源出来：
+| 方式 | 适合 | 产出 |
+|---|---|---|
+| **paper2patent Skill**（推荐） | Codex、Claude、Claude Code、Cursor 等支持 Skills 的工具 | Word/PDF 申请文件、黑白附图、撰写说明 |
+| **论文转专利 Flash** | 任意大模型对话，快速出一版初稿 | 五部分纯文本 |
+| **论文转专利 Pro** | 需要更细的撰写规范和自检 | 五部分纯文本 |
+| **专利附图生成（Gemini）** | 已有专利文本，生成参考附图 | 附图图片 |
 
-- **📝 专利结构模板**：提供完整的专利五大部分结构（说明书摘要、摘要附图、权利要求书、说明书、说明书附图），严格遵循中国专利法及其实施细则的撰写规范
-- **⚖️ 权利要求布局**：包含独立权利要求与从属权利要求的撰写规范，保护范围层层递进
-- **🔄 智能转换流程**：从论文中自动提取核心技术贡献，重构为专利法律文本的表达方式
-- **✅ 质量检查清单**：内置多条核心规则检查，确保专利文件的合规性
-- **📐 附图绘制规范**：提供系统框图、流程图等专利附图的标准模板
+## paper2patent Skill
 
-## ✨ 特点
-- 🔬 **合规权威**：严格遵循中国专利法及其实施细则（2020年修订版）的撰写规范
-- 🚀 **开箱即用**：复制 prompt 即可启动转换，无需记忆复杂的专利撰写流程
-- 🤝 **忠实原文**：所有技术内容严格源自论文原文，不添加、不修改、不歪曲
-- 🔒 **保护范围合理**：权利要求层次化布局，核心发明点到具体实施例层层递进
+在支持 Skills 的 AI 工具中，把"读论文 → 判断公开状态 → 规划权利要求 → 撰写 → 画图 → 检查 → 生成 Word/PDF"整套流程交给 AI 完成。作者主要在 **Codex** 中验证，也兼容 Claude、Claude Code、Cursor、Windsurf。
 
+### 安装
 
----
+```bash
+git clone https://github.com/7toCR/paper2patent.git
+cd paper2patent
+```
 
-## 📑 目录 (Table of Contents)
+| 工具 | 安装方式 |
+|---|---|
+| Codex | macOS/Linux：`cp -R skills/paper2patent ~/.codex/skills/`<br>Windows：`Copy-Item -Recurse -Force .\skills\paper2patent "$env:USERPROFILE\.codex\skills\"` |
+| Claude Code | 在本仓库内直接可用（`.claude/skills/paper2patent/`）；全局使用时复制到 `~/.claude/skills/` |
+| Claude 桌面版 / 网页版 | 把 `skills/paper2patent/` 打包为 zip，在设置的 Skills 区域上传 |
+| Cursor / Windsurf | 使用 `.cursor/rules/`、`.windsurf/rules/` 中的项目规则，并引用 `skills/paper2patent/` |
 
-- [论文转专利Flash](#论文转专利Flash)
+**升级**：本仓库没有版本号，升级即 `git pull` 后重新复制。先删除旧目录再复制，避免已删除的旧文件残留：
 
-- [论文转专利Pro](#论文转专利Pro)
+```bash
+git pull
+rm -rf ~/.codex/skills/paper2patent && cp -R skills/paper2patent ~/.codex/skills/
+```
 
-- [专利附图生成（Gemini）](#专利附图生成gemini)
+### 使用
 
-- [paper2patent Skills](#paper2patent-skills)
+直接用自然语言描述任务即可（Codex 中也可以输入 `$paper2patent` 调用）：
 
+- "使用 paper2patent skill，将这篇论文生成中国发明专利申请书 Word 和 PDF。"
+- "先帮我梳理发明点和权利要求布局，确认后再写。"
+- "请基于论文原文检查这份专利草稿是否有编造内容。"
+- "根据已生成的权利要求书和说明书生成黑白专利附图。"
+- "我的论文已经上传 arXiv 了，还能申请专利吗？"
 
----
+### 输出
+
+- `<名称>_专利申请文件.docx / .pdf`：只含五部分申请文本，每部分另起一页，附图下只标"图N"。
+- `<名称>_专利申请文件_撰写说明.docx`：供申请人和代理师审核，包括待补充材料清单、充分公开核查、公开与新颖性风险、权利要求布局与论文出处对照、附图来源、自动检查结果。
+- 各附图的 SVG 和 PNG 文件。
+
+运行环境：Python 3.9+；画附图需要 Pillow 和一种中文字体（Windows/macOS 自带字体或 Noto CJK 均可，也可以用环境变量 `PATENT_CJK_FONT` 指定）；导出 PDF 需要 LibreOffice。
+
+<details>
+<summary><b>目录结构</b></summary>
+
+```text
+skills/paper2patent/                 Skill 主版本（.claude/skills/paper2patent/ 为同步镜像）
+├── SKILL.md                         工作流与核心规则
+├── references/
+│   ├── patentability-and-disclosure.md   论文公开与新颖性、AI/算法发明的客体与充分公开
+│   ├── patent-drafting-standard.md       五部分撰写规范、论文→专利对照、充分公开核查
+│   ├── claims-drafting.md                权利要求特征分拣、从属权利要求层次、用语规则
+│   ├── drawing-generation.md             附图规范与节点/连线写法
+│   ├── document-generation.md            结构化内容格式与生成流程
+│   ├── input-requirements.md             输入要求与缺口处理
+│   └── quality-checklist.md              交付前检查清单
+├── scripts/
+│   ├── check_patent_draft.py        自动形式与范围检查
+│   ├── generate_patent_drawings.py  黑白专利附图（SVG + PNG）
+│   ├── generate_patent_docx.py      申请文件与撰写说明（DOCX）
+│   └── export_patent_pdf.py         PDF 导出与逐页预览
+└── assets/example_patent_content.json   完整的结构化内容示例
+evals/                               评估方案：评分细则、盲评流程、结构检查脚本
+```
+
+</details>
+
+## Prompt 模板
 
 > 💡 **使用说明**：以下 Prompt 可直接复制到聊天框中与大模型交互使用。每个 Prompt 都经过精心设计，请完整复制使用以获得最佳效果。
+>
+> 这三个模板用于在对话中直接生成纯文本。需要 Word/PDF 文件、规范附图和自动检查时，建议使用上面的 [paper2patent Skill](#paper2patent-skill)。
 
-## 论文转专利Flash
+### 论文转专利 Flash
+
+快速版：规则精简，适合先出一版五部分初稿。
+
+<details>
+<summary><b>展开 Prompt</b></summary>
 
 ````markdown
 # Role
@@ -109,10 +184,15 @@
 [在此输入论文原文或者粘贴论文文件]
 ````
 
+</details>
 
+### 论文转专利 Pro
 
+完整版：包含各部分的详细撰写规范、专利撰写方法论、输出前检查清单和常见错误预警。
 
-## 论文转专利Pro
+<details>
+<summary><b>展开 Prompt</b></summary>
+
 ````markdown
 # Role
 你是一位资深的专利撰写专家，专注于将计算机视觉、人工智能、深度学习等前沿领域的学术论文精准转换为高质量发明专利申请文件。你同时具备深厚的技术理解能力、严谨的法律文本撰写能力和敏锐的专利挖掘思维。
@@ -896,16 +976,18 @@
 [在此处粘贴你的论文原文或者粘贴论文文件]
 ````
 
----
+</details>
 
-## 专利附图生成（Gemini）
+### 专利附图生成（Gemini）
 
 > 💡 **使用说明**：本 Prompt 用于在完成专利文本撰写后，生成符合中国专利申请规范的说明书附图。建议使用 **Gemini 3.1 Pro**（nano banana 模式）配合本 Prompt 使用。将你的论文原文和已生成的专利申请文本一起提供给模型，即可获得与权利要求书和说明书一致的专利参考附图。
->注意:
->1.输入文本越多，nano banana生成速率越慢、生成失败率越高！！！(优先将《Prompt模板》+《专利申请文本》投给Gemini 3.1 Pro)
->2.使用nano banana应该关闭浏览器的自动翻译
+>
+> **注意**：
+> 1. 输入文本越多，nano banana 生成速率越慢、生成失败率越高！！！（优先将《Prompt 模板》+《专利申请文本》投给 Gemini 3.1 Pro）
+> 2. 使用 nano banana 应该关闭浏览器的自动翻译。
 
-
+<details>
+<summary><b>展开 Prompt</b></summary>
 
 ````markdown
 # Role
@@ -994,110 +1076,23 @@
 [在此粘贴已生成的完整专利申请文本，包括权利要求书和说明书]
 ````
 
----
+</details>
 
-## paper2patent Skills
+## 使用须知
 
-本仓库提供 `paper2patent` AI Skill，用于在支持 Skills 的 AI 工具中复用论文转中国发明专利的完整工作流。作者主要在 **Codex** 中验证，也兼容 Claude Code、Cursor、Windsurf 等以本地规则或 Skills 目录加载上下文的工具。
+- 生成内容是供专利代理师审核的草稿，不构成法律意见；提交前请由代理师结合现有技术检索审核权利要求的保护范围。
+- **申请要赶在论文公开之前**：arXiv、会议或期刊出版、项目主页、开源代码、公开报告都可能构成公开；国际学术会议一般不能当然适用 6 个月宽限期。
+- 不要把未公开的论文、生成的申请文件或个人信息提交到公开仓库。
 
-### 目录结构
+## 更新记录与评估
 
-- `skills/paper2patent/`：标准 Skills 目录，作为本仓库维护的主版本。
-- `.claude/skills/paper2patent/`：Claude Code 项目级 Skill 镜像，与主版本保持同步。
-- `skills/paper2patent/references/`：
-  - `patentability-and-disclosure.md`：论文公开与新颖性（宽限期）、AI/算法发明的客体与充分公开要求（2026年1月1日施行的《专利审查指南》）
-  - `patent-drafting-standard.md`：五部分撰写规范与"论文→专利"对照表
-  - `claims-drafting.md`：权利要求布局（方法 + 装置 + 电子设备 + 存储介质）、用语与引用规则
-  - `drawing-generation.md`、`document-generation.md`、`input-requirements.md`、`quality-checklist.md`
-- `skills/paper2patent/scripts/`：
-  - `check_patent_draft.py`：自动形式检查（禁用词、单句号、引用关系、引用基础、摘要300字、附图编号与附图标记一致性等）
-  - `generate_patent_drawings.py`：按节点/连线生成黑白专利附图（SVG + PNG），支持分支、汇合、判断与回环
-  - `generate_patent_docx.py`：生成申请文件 DOCX（五部分分页）和独立的《撰写说明》
-  - `export_patent_pdf.py`：LibreOffice 导出 PDF，并可生成逐页预览图
-- `skills/paper2patent/assets/example_patent_content.json`：完整的结构化内容示例
+- 更新记录：[CHANGELOG.md](CHANGELOG.md)
+- 评估方法（评分细则、盲评流程、结构检查脚本）：[evals/README.md](evals/README.md)
 
-运行环境：Python 3.9+；附图需要 Pillow 和一种中文字体（Windows/macOS 自带字体或 Noto CJK 均可，也可用环境变量 `PATENT_CJK_FONT` 指定）；PDF 需要 LibreOffice。
-
-### 安装与部署
-
-推荐方式是复制本仓库的 `skills/paper2patent/` 目录到目标工具可读取的 Skills 目录中，不依赖第三方安装器。
-
-**Codex（推荐）**
-
-
-```
-git clone https://github.com/7toCR/paper2patent.git
-cd paper2patent
-```
-
-
-Windows PowerShell 示例：
-
-```powershell
-Copy-Item -Recurse -Force .\skills\paper2patent "$env:USERPROFILE\.codex\skills\"
-```
-
-macOS / Linux 示例：
-
-```bash
-cp -R skills/paper2patent ~/.codex/skills/
-```
-
-**升级**：本仓库没有版本号，升级即 `git pull` 后重新复制。请先删除旧目录再复制，避免已删除的旧文件残留：
-
-```bash
-git pull
-rm -rf ~/.codex/skills/paper2patent && cp -R skills/paper2patent ~/.codex/skills/
-```
-
-安装后，在 Codex 中直接说明任务或者使用$查找paper2patent使用：
-1.例如“使用 paper2patent skill，将这篇论文生成中国发明专利申请书 DOCX/PDF”。
-2.$paper2patent “将这篇论文生成中国发明专利申请书 DOCX/PDF”。
-
-**Claude Code**
-
-项目级部署可使用仓库内置的 `.claude/skills/paper2patent/`。如需同步最新版，将 `skills/paper2patent/` 覆盖复制到 `.claude/skills/paper2patent/`，然后在 Claude Code 中提出论文转专利、权利要求撰写、说明书生成或忠实性检查需求。
-
-**Cursor**
-
-Cursor 可结合本仓库的 `.cursor/rules/paper2patent.mdc` 与 `.claude/skills/paper2patent/` 使用。建议打开 Cursor Settings 中的 Rules / Skills 相关区域，确认项目规则已加载，再用自然语言描述任务。
-
-**Windsurf**
-
-Windsurf 可使用 `.windsurf/rules/paper2patent.md` 作为项目规则，并引用 `skills/paper2patent/` 中的完整工作流。适合在仓库内直接处理专利文本、脚本和生成文件。
-
-**Claude 桌面版 / 网页版**
-
-将 `skills/paper2patent/` 文件夹打包为 zip，在 Claude 设置的 Skills 区域上传；升级时上传新的 zip 覆盖即可。
-
-### 使用示例
-
-- “请使用 paper2patent skill，将这篇论文生成中国发明专利申请书 DOCX/PDF。”
-- “请基于论文原文检查这份专利草稿是否存在编造内容。”
-- “根据已生成的权利要求书和说明书生成黑白专利附图。”
-- “我的论文已经上传 arXiv 了，还能申请专利吗？”
-
-生成结果包括：`<名称>_专利申请文件.docx/.pdf`（仅含五部分申请文本）、`<名称>_专利申请文件_撰写说明.docx`（开头是待补充材料清单，其后为公开与新颖性风险、权利要求特征分拣与布局、权利要求—论文出处对照、附图来源、自动检查结果）以及各附图的 SVG/PNG。生成内容为供专利代理师审核的草稿，不构成法律意见。
-
-更新记录见 [CHANGELOG.md](CHANGELOG.md)。评估方法（评分细则、盲评流程、结构检查脚本）见 [evals/README.md](evals/README.md)。
-
----
-
-# 致谢 / Acknowledgments
+## 致谢
 
 本项目的 README 结构与内容参考了 [awesome-ai-research-writing](https://github.com/Leey21/awesome-ai-research-writing)，感谢作者的整理与分享。本项目的部分内容受到了该仓库的启发。
 
----
-
-# 其他说明
-
-本项目的 LICENSE 文件采用 [MIT License](LICENSE)。
-详细社区使用规范请参阅 [CLAUSE.md](CLAUSE.md)。
 ## Star History
-<a href="https://www.star-history.com/?repos=paper2patent%2Fpaper2patent&type=timeline&logscale=&legend=top-left">
- <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=paper2patent/paper2patent&type=timeline&theme=dark&logscale&legend=top-left&sealed_token=kgAvl3-wGLyL4WpyWhHEBeQ-3Gv5QMr3ibbMHkTnARKLzLgnHJRCNC6dii4sXwfXt7hTohPoB_CB4hHGBOxiCnFduAELs9-EhcFhc0fNCt6bIprwIV9Pr5hQ9Jut-OtLY06pPB0duiDL-EFgQpoIgJqVH6YMcIyn8J33WbhvcumLg4GRfo9TO_CwpgMl" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=paper2patent/paper2patent&type=timeline&logscale&legend=top-left&sealed_token=kgAvl3-wGLyL4WpyWhHEBeQ-3Gv5QMr3ibbMHkTnARKLzLgnHJRCNC6dii4sXwfXt7hTohPoB_CB4hHGBOxiCnFduAELs9-EhcFhc0fNCt6bIprwIV9Pr5hQ9Jut-OtLY06pPB0duiDL-EFgQpoIgJqVH6YMcIyn8J33WbhvcumLg4GRfo9TO_CwpgMl" />
-   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=paper2patent/paper2patent&type=timeline&logscale&legend=top-left&sealed_token=kgAvl3-wGLyL4WpyWhHEBeQ-3Gv5QMr3ibbMHkTnARKLzLgnHJRCNC6dii4sXwfXt7hTohPoB_CB4hHGBOxiCnFduAELs9-EhcFhc0fNCt6bIprwIV9Pr5hQ9Jut-OtLY06pPB0duiDL-EFgQpoIgJqVH6YMcIyn8J33WbhvcumLg4GRfo9TO_CwpgMl" />
- </picture>
-</a>
+
+[![Star History Chart](https://api.star-history.com/chart?repos=7toCR/paper2patent&type=date&legend=top-left)](https://www.star-history.com/?repos=7toCR%2Fpaper2patent&type=date)
