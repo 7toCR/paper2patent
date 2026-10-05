@@ -22,3 +22,17 @@ $env:PYTHONUTF8='1'; python <skill-creator>/scripts/quick_validate.py skills/pap
 $env:PYTHONUTF8='1'; python <skill-creator>/scripts/quick_validate.py .claude/skills/paper2patent
 git diff --check
 ```
+
+Smoke-test the scripts on the bundled example (outputs go to a temporary folder outside git):
+
+```bash
+mkdir -p /tmp/p2p && cp skills/paper2patent/assets/example_patent_content.json /tmp/p2p/example.json
+python skills/paper2patent/scripts/check_patent_draft.py /tmp/p2p/example.json
+python skills/paper2patent/scripts/generate_patent_drawings.py /tmp/p2p/example.json -o /tmp/p2p/out --update-json
+python skills/paper2patent/scripts/generate_patent_docx.py /tmp/p2p/example.json -o /tmp/p2p/out/example.docx --require-drawings
+python skills/paper2patent/scripts/export_patent_pdf.py /tmp/p2p/out/example.docx -o /tmp/p2p/out/example.pdf --preview-dir /tmp/p2p/out/preview
+```
+
+Keep `skills/paper2patent/` and `.claude/skills/paper2patent/` identical (`diff -r`).
+
+To judge whether a change improves draft quality, follow `evals/README.md` (fixed conditions, several papers and runs, blind pairwise review with `evals/rubric.md`). Never commit files under `evals/inputs/` or `evals/runs/`.

@@ -1,129 +1,107 @@
 # Drawing Generation
 
-Use this reference when the user asks for patent drawings, drawing prompts, drawing descriptions, or consistency checks between drawings and patent text.
+Read when preparing 说明书附图 or reviewing drawings.
 
-## Drawing Types
+## Requirements (实施细则第21条, 审查指南第一部分第一章)
 
+- Figures numbered 图1, 图2, … in the order the description introduces them. The figure number is printed **under** the figure ("图1"); figure titles do not appear on the drawing sheet — they belong in 附图说明.
+- Black lines on white. No colour, grey fills, gradients, shadows, photos, 3-D effects, logos or watermarks.
+- 附图中除必需的词语外，不应当含有其他注释. For flowcharts and block diagrams the words inside boxes are the necessary words; keep them short.
+- Reference numerals used in a drawing must appear in the description text, and numerals mentioned in the text must appear in a drawing. The same component keeps the same numeral everywhere.
+- Lines clear and even; the drawing stays legible when reduced to two-thirds; the abstract drawing stays legible at 4 cm × 6 cm.
 
-Select only drawings supported by the source paper figures, captions, method text, claims, and specification:
+## Which figures to make
 
+Typical set for an AI/algorithm paper (adapt to the invention):
 
-- Method flowchart: covers all steps of an independent method claim.
-- System block diagram: covers supported system modules and data/control relationships.
-- Data flow diagram: shows input, intermediate products, and output when the paper describes data transformation.
-- Detail diagram: expands a dependent claim or key sub-step when source material supports it.
+| Figure | Type | Content source |
+|---|---|---|
+| 图1 | `flowchart` | Steps of claim 1, S101…; usually the 摘要附图 |
+| 图2 | `block` | Model / data-flow diagram redrawn from the paper's main architecture figure |
+| 图3 | `flowchart` | Detail of a key sub-step or training procedure, if a dependent claim covers it |
+| 图N-1 | `block` + `container` | Apparatus: modules 301, 302 … mirroring the apparatus claim |
+| 图N | `block` | Electronic device: processor 401 ↔ memory 402 (generic carrier) |
 
-## Visual Constraints
+Only draw what the claims and description need. Do not reproduce result plots, qualitative example images or photos — they are not line drawings and rarely support a claim.
 
-- Use pure black-and-white line drawings.
-- Use a white background.
-- Do not use color, gradients, shadows, textures, photos, 3D renders, cartoons, or decorative effects.
-- Keep lines clear, even, and continuous.
-- Use Simplified Chinese labels.
-- Keep labels short: module names, step numbers, component names, or key terms only.
-- Avoid long sentences and complex formulas inside drawings.
-- Do not draw the figure number or figure title inside the image canvas. Keep captions outside the image in the patent document.
-- Do not include unrelated titles, watermarks, logos, UI chrome, explanatory paragraphs, or labels unsupported by the source material.
-- Keep the content tightly framed. The technical content should occupy about 80% or more of both canvas width and canvas height; avoid large blank margins, while preserving enough edge space to prevent clipping.
+## Draw the mechanism, not just the happy path
 
-## Source-Figure Priority
+If the invention includes verification, revision, retry, iteration, convergence or fallback behaviour, the flowchart that illustrates claim 1 (usually 图1) must show it: a decision node (`shape: "decision"`) after the check, a "否" edge back to the step that is revised, and the "是" edge onward. A linear chain that only shows the success path makes the drawing describe a different, weaker method than the claims, and the examiner reads the figures together with the text.
 
-For complete patent applications, generate the first reference drawings from the original paper material before using image-generation models:
+Typical patterns:
 
-1. Prefer paper figures, figure captions, and nearby method text as the source of layout, nodes, arrows, and technical relationships.
-2. Use the patent claims and specification to normalize legal terminology, step numbers, module names, and figure captions.
-3. If no source figure exists, derive a drawing only from explicit source-supported method steps, modules, or data-flow descriptions.
-4. If the available text does not identify enough steps, modules, nodes, or connections, mark a material gap or fail that figure generation; do not fill with generic examples.
+- **Check after a stage**: `S103 构建场景记录 → S104 场景记录校验通过？ —否→ S103; —是→ S105`.
+- **Bounded retries**: a second decision ("修订轮数是否用尽？") whose "是" edge leads to the stop/report step and whose "否" edge returns to the revision.
+- **Checks acting on several stages**: one decision per stage, each looping back to its own stage; label an edge "上游修改后复核" when the paper re-checks dependent conditions after an upstream change. Put a very detailed version in its own figure if 图1 would become crowded, but keep at least the main loop in 图1.
+- **One check, targeted return**: when a single check decides which stage failed, draw one labelled return edge per stage it can send work back to, rather than a single generic "否" edge, so the figure shows that only the failing stage is redone:
 
-## Numbering and Consistency
+  ```json
+  {"from": "S104", "to": "S101", "label": "需求未通过"},
+  {"from": "S104", "to": "S102", "label": "场景未通过"},
+  {"from": "S104", "to": "S103", "label": "音乐未通过"}
+  ```
 
-- Method steps use `S101`, `S102`, `S103` when a procedural format is needed.
-- Figure numbers follow the order used in the specification.
-- Module names, step names, component numbers, and arrows must match the claims and specification.
-- Do not add components, steps, links, or terms not present in the patent text.
-- If a drawing cannot be created from the available text, request the missing architecture or step information.
-- Captions may contain "图1" or a descriptive title, but the image file itself must not contain the figure number or title.
+  Combine this with a stop condition (a second decision such as "输入缺失或轮次耗尽？") when the paper has one. Show both the targeted returns and the stop condition; reviewers found that drafts showing only one of the two were each missing part of the mechanism.
 
-## Required Output for Full Applications
+The checker warns (code F10) when the claims describe such a mechanism but no drawing has a decision node or loop.
 
-For complete Word/PDF patent application requests, generate drawing specifications, black-and-white SVG reference drawings, and converter-compatible PNG fallback drawings when Pillow is available. Drawing specifications alone are acceptable only in `text-only` mode or when the user explicitly accepts a no-image fallback.
-
-The default generator is:
-
-```powershell
-python skills/paper2patent/scripts/generate_patent_drawings.py patent_content.json --output-dir output --update-json
-```
-
-The script writes SVG files, writes PNG fallback files when possible, and updates `drawing_assets` in the JSON. The DOCX generator embeds a visible drawing for each asset, using PNG fallback by default for Word/PDF compatibility.
-
-## Drawing Specifications
-
-Always keep drawing specifications in the generated application text:
-
-```text
-图1：一种[发明名称]方法流程图
-包含步骤S101...、S102...、S103...，各步骤按照从上到下的顺序连接。
-
-图2：一种[发明名称]系统结构示意图
-包含[模块A]、[模块B]、[模块C]，数据流方向为...
-```
-
-For image-generation environments or external drawing tools, provide one prompt per figure and require independent image outputs for each figure. Embed generated images only after checking that they are black-and-white line drawings with no extra modules, labels, arrows, or visual effects.
-
-For Image2 or similar two-stage refinement, use the local SVG/PNG as the structural reference. The prompt must require strict structural copying, no internal title, no extra content, and tight framing. Image-generation output is not a source of new technical disclosure.
-
-## SVG Asset Contract
-
-Each figure asset should be represented in `drawing_assets`:
+## Figure spec format (JSON `drawings` entries)
 
 ```json
 {
-  "figure_no": 1,
-  "title": "一种……方法流程图",
-  "type": "method_flow",
-  "svg_path": "output/paper_图1.svg",
-  "png_path": "output/paper_图1.png",
-  "caption": "图1 一种……方法流程图",
-  "source_figure": {
-    "figure_no": 1,
-    "source_label": "Figure 2",
-    "caption": "paper figure caption",
-    "page": 4,
-    "notes": "source-supported modules and arrows"
-  },
-  "abstract_candidate": true,
-  "validation": {
-    "content_width_ratio": 0.8,
-    "content_height_ratio": 0.8,
-    "internal_title": false,
-    "passes": true
-  },
-  "image_model_prompt": "请生成中国发明专利申请的说明书附图图1……"
+  "figure_no": 2,
+  "title": "本发明实施例提供的……的结构示意图",
+  "type": "block",
+  "source": "论文图2；第3.2节",
+  "container": {"ref": "300"},
+  "nodes": [
+    {"id": "enc", "label": "视觉编码器"},
+    {"id": "dec", "label": "判断是否收敛", "shape": "decision"},
+    {"id": "m1", "label": "特征提取模块", "ref": "301"}
+  ],
+  "edges": [
+    {"from": "enc", "to": "m1"},
+    {"from": "dec", "to": "enc", "label": "否"},
+    {"from": "cpu", "to": "mem", "both": true}
+  ]
 }
 ```
 
-Supported `type` values are `method_flow`, `system_block`, and `data_flow`. Use `method_flow` when uncertain and the drawing specification is step-based. Do not create decorative or conceptual figures.
-When `source_figures` is present, the generator should attach the matching source-paper metadata to each `drawing_asset` and use it as the first reference for layout, prompts, and consistency checks.
+- `type`: `flowchart` (wraps labels at ~18 characters) or `block` (~12 characters).
+- `shape`: `process` (default rectangle), `decision` (diamond; label its outgoing edges 是/否), `terminal` (rounded; for 开始/结束 if wanted).
+- `ref`: reference numeral, drawn outside the box with a leader line.
+- `container`: draws a frame around all nodes, with an optional `ref` (e.g. the apparatus 300) and optional `label`.
+- `edges`: `[from, to]`, `[from, to, label]` or objects; `both: true` for a double-headed arrow. Back edges (loops) are routed around the side automatically.
+- `title` is for 附图说明 and the drafting notes only; it is never drawn.
+- `source`: where in the paper the structure comes from (shown in the drafting notes).
 
-When available, keep source-paper figure metadata in `source_figures`:
+## Fidelity rules for drawings
 
-```json
-{
-  "figure_no": 1,
-  "source_label": "Figure 2",
-  "caption": "paper figure caption",
-  "page": 4,
-  "notes": "source-supported modules and arrows"
-}
+- **Nodes and edges come from the source.** Use the paper's figure (look at it), its caption and the method text; use the patent text only to normalise terms and numbering.
+- **Never guess a connection.** If the paper does not say how two modules are connected, leave the edge out and add a `【待补充】` gap. The generator never adds edges on its own.
+- Flowchart steps are sequential by definition; branches, loops and parallel paths must be stated in the paper (pseudo-code, "repeat until", "in parallel").
+- Labels use the same terms as the claims; step labels start with the step number ("S102 生成场景描述文本"). Sub-steps of a step shown in a detail flowchart are numbered S1021, S1022, … (sub-steps of S102).
+- Keep labels short: a step is a verb phrase (动作 + 对象 + 结果), not a sentence with reasons. The generator wraps long labels and never truncates them, so an overly long label produces a big box, not missing text.
+- If the paper's figure contains elements outside the claimed invention (e.g. a baseline branch, a loss used only for an ablation), leave them out or mark them clearly in the description.
+
+## Keeping figures legible
+
+- Aim for at most ~15 nodes and at most 3 boxes side by side per figure. A paper's overview figure often needs two patent figures (e.g. scene understanding / music planning). The generator warns when a figure has many nodes or when the text would print smaller than ≈2.2 mm.
+- Use `type: "block"` (narrower boxes) for rows of several modules; `flowchart` boxes are wider and suit a single column of steps.
+- The order of `nodes` is the initial left-to-right order within each row. If a loop arrow is reported to cross boxes, move its endpoints to the start or end of the list so they sit at the edge of their rows.
+
+## Generation and review
+
+```bash
+python <skill>/scripts/generate_patent_drawings.py patent.json -o out --update-json
 ```
 
-## Word/PDF Generation Policy
+Writes `<prefix>_图N.svg` and `<prefix>_图N.png` (300 dpi, grayscale, real Chinese font) and fills `drawing_assets` and `image_model_prompts` in the JSON. It fails loudly on unknown node IDs, empty labels, figure numbers inside labels, or when no Chinese font is available (set `PATENT_CJK_FONT=/path/to/font` if needed).
 
-- Always include the abstract drawing choice or statement in `abstract_drawing`.
-- Always include drawing specifications in `drawings`.
-- For a full application document, run the SVG drawing generator before DOCX generation.
-- The DOCX must embed the selected abstract drawing in `摘要附图`.
-- The DOCX must embed every generated figure in `说明书附图`.
-- Prefer PNG fallback for the embedded visible image when the target Word/PDF converter cannot reliably render SVG.
-- If compliant image files cannot be produced, state the limitation clearly and do not present the file as a complete application with drawings.
-- Reject or regenerate drawings that have internal titles, excessive blank margins, unsupported modules, visual decorations, or text overlaps.
+Then **open each PNG and look at it**: correct structure, readable text, no overlapping lines or labels, arrows pointing the right way. If something looks wrong, change the spec (shorter labels, a different node order in `nodes`, splitting a crowded figure into two) and regenerate.
+
+Legacy string specs ("图1：……包含步骤S101，……；S102，……") still work for simple step lists; module lists given as strings are drawn without edges and produce a warning. Rewrite them in the structured form.
+
+## Optional: image-model refinement
+
+`image_model_prompts` contains one prompt per figure for a two-stage flow (generated PNG as structural reference → image model such as Gemini for a cleaner rendering). The generated SVG/PNG is already filing-grade line art, so refinement is optional. If used, compare the refined image with the reference node by node and edge by edge; reject any image that adds, drops or renames anything, adds a title, or uses grey or colour. An image model is never a source of technical content.

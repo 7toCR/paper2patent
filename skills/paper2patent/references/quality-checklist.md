@@ -1,57 +1,56 @@
 # Quality Checklist
 
-Run this checklist internally before final output or when reviewing a draft. Report only user-relevant issues unless the user explicitly asks for the checklist.
+Run before delivery and in `review` mode. The first block is automated; the rest needs judgement. Report only what the user needs (open issues, gaps, risks), not the checklist itself.
 
-## Fidelity
+## A. Automated (`scripts/check_patent_draft.py`)
 
-- Every technical feature is supported by the paper or supplied patent text.
-- No unsupported hardware, deployment scenario, training strategy, application domain, metric, or result was added.
-- Experimental conclusions are not overstated as universal technical effects.
-- Paper wording has been transformed into patent language rather than copied verbatim.
-- Generated drawings are traceable to source paper figures, figure captions, method text, claims, or specification, not to generic sample nodes.
+Covers: claim numbering; one final period; uncertain words; references to the description/figures in claims; dependency direction; 择一 for multiple dependency; multiple-on-multiple dependency; subject/category consistency; antecedent basis (heuristic); invention-name length and wording; abstract length (300 incl. punctuation) and wording; empty description sections; "如权利要求……所述" and paper-style wording in the description; figure numbering vs. 附图说明; abstract figure; reference numerals in drawings vs. text; step numbers in drawings vs. text; `【待补充】` vs. `gaps`; `support_map` coverage.
 
+Zero errors is required. A warning is acceptable only when you can say why it is a false alarm.
 
-## Patent Logic
+## B. Fidelity audit (claim by claim)
 
-- Difference point, technical problem, technical solution, and technical effect form a coherent chain.
-- The invention name is consistent throughout the document.
-- Claims and specification support each other.
-- Drawing descriptions correspond to the claimed steps or modules.
-- Source-paper figures, patent captions, claims, specification, and drawing labels use consistent terminology.
+For every claim feature, point to the paper location in `support_map`. Then check:
 
-## Claims
+- Nothing in the claims, description or drawings is absent from the paper: no new module, step, parameter, dataset, hardware, application scenario, effect or number.
+- Generalisations in claim 1 are backed by the paper (alternatives mentioned, function described generically).
+- Effects are the paper's effects, with the paper's numbers, compared against the method the paper compared against.
+- Nothing from limitations or future work appears as an embodiment.
+- Drawings: every node and edge traceable to the paper's figure or text.
 
-- Independent claims cover a complete technical solution.
-- Dependent claims have valid citation basis.
-- Claims contain no uncertain words such as "等", "大约", "优选", "可以", "比如", or "不限于".
-- Each claim ends with exactly one final period and has no internal period.
-- Total claim count is reasonable for the requested scope.
+## C. Patent logic
 
-## Specification
+- Claim 1 was triaged feature by feature (`notes.claim_plan`): no organisational detail, complete enumerations, round limits, code field names or negative limitations unless they are the technical contribution.
+- Verification/revision/iteration mechanisms in the claims are drawn as loops in the flowchart (checker F10).
+- The description contains no drafting remarks (checker D08); evidence boundaries from the paper are stated once, briefly; technical clarifications of what a constraint or state means are kept.
+- If the paper has a worked example of the core mechanism, the embodiment walks through it; if not, the handover list asks for one.
+- Each separable mechanism has its own dependent claim; no dependent claim bundles independent mechanisms (checker C24).
+- Every branch of a generalised claim 1 (alternatives, generic terms) is described in the embodiment; thin branches are flagged in `notes.risks` and the handover list.
+- Parameters appear in claims only where the paper shows they matter; wording keeps the paper's strength (checker C25).
+- `notes.sufficiency` covers claim 1 and the main dependent claims; every gap is named, none is filled by invention (checker S03).
+- Distinguishing features → technical problem → technical effect form one chain that appears consistently in 背景技术, 发明内容 and 具体实施方式.
+- Claim 1 contains all necessary features and no incidental ones; dependent claims are real fallback positions, ranked by value.
+- Apparatus modules map one-to-one to method steps; device and medium claims refer to the right method claims.
+- Technical character is explicit: technical field, technical data, technical effect (`patentability-and-disclosure.md` §3).
 
-- Technical background includes definitions, existing methods, existing problems, causes, and consequences.
-- Invention content includes summary, detailed solution, and technical effects.
-- Embodiments are sufficiently detailed for a skilled person to implement the solution.
-- Terms remain consistent across abstract, claims, specification, and drawings.
+## D. Sufficiency and support
 
-## Document Files
+- 具体实施方式 explains every claim term and every step with inputs, outputs, formulas and parameters as reported.
+- For model-based inventions: modules/layers/connections, training data, loss, optimiser and key hyperparameters, and how inputs/outputs map to the application scene.
+- Claim wording appears in the description in the same terms.
+- Every figure is referred to in the embodiment; every reference numeral in a figure appears in the text and vice versa.
 
-- A full direct-generation request creates a DOCX unless the environment prevents file writing.
-- A full direct-generation request creates SVG reference drawings, creates PNG fallback drawings when possible, and embeds visible drawings in the DOCX.
-- PDF export is attempted when LibreOffice or an equivalent converter is available.
-- The generated document contains all five sections: 说明书摘要、摘要附图、权利要求书、说明书、说明书附图.
-- The 摘要附图 section contains the selected reference drawing, not only a text statement.
-- The 说明书附图 section contains every generated figure with a centered caption.
-- Image files do not contain internal figure numbers or figure titles; captions appear outside the image.
-- Drawing canvases are tightly framed around the technical content, with no excessive blank margins.
-- Drawings contain no unrelated title text, explanatory paragraphs, logos, watermarks, decorative elements, colors, grayscale, shadows, or unsupported labels.
-- `image_model_prompts` require strict structural copying, no internal title, tight framing, and no unsupported modules when Image2-style refinement is used.
-- The DOCX package contains embedded drawing image files under `word/media/`, image relationships under `word/_rels/document.xml.rels`, and DrawingML picture references in `word/document.xml`.
-- Rendered PDF pages show the drawings clearly without blank image placeholders, clipped labels, or overlapping text.
-- Any remaining `【待补充：...】` placeholders are also listed in 材料缺口说明.
-- Generated files are not committed to the repository unless the user explicitly requests a tracked example.
-- File paths in the final response do not expose private local user data beyond the workspace path needed for access.
+## E. Form and files
 
-## If Issues Remain
+- Five parts present and in order; each starts on a new page; drawings show only "图N" underneath; no source-paper line, notes or gaps list inside the application file.
+- Drawings: black and white, readable, no clipped or overlapping labels, no internal titles. You looked at the PNGs and the preview pages.
+- The 撰写说明 file contains the disclosure status, risks, claim structure, support map, gaps and drawing sources.
+- PDF produced (or the limitation stated).
 
-If the issue is caused by missing source material, do not fabricate. State the missing material and request it. If the issue is caused by an unsupported addition, remove or qualify it.
+## F. Message to the user
+
+- Files and what each is.
+- Claim 1's core in one or two sentences; the claim structure.
+- Disclosure/novelty assessment and any 客体 or data-ethics risk.
+- Where the handover checklist is and its key items (ownership, disclosure date, missing technical material).
+- Recommendation: review by a patent attorney and a prior-art search before filing.

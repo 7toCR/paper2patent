@@ -18,3 +18,7 @@ __pycache__/
 # OS files
 .DS_Store
 Thumbs.db
+
+# Evaluation inputs and outputs (papers may be unpublished)
+evals/inputs/
+evals/runs/

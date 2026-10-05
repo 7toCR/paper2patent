@@ -1,0 +1,41 @@
+{
+  "skill_name": "paper2patent",
+  "notes": "论文 PDF 请自行下载到 evals/inputs/（已在 .gitignore 中，不进仓库）。未公开的论文只放在本地 inputs/，不要提交。",
+  "evals": [
+    {
+      "id": "multi-agent-llm",
+      "paper": "arXiv:2308.00352 (MetaGPT)",
+      "input": "inputs/2308.00352.pdf",
+      "prompt": "这是我们的论文，假设尚未以任何形式公开。请写成中国发明专利申请文件，要 Word 和 PDF。",
+      "focus": ["独立权利要求概括（角色分工是否写进权利要求1）", "从属权利要求一项一机制", "充分公开核查（提示词、消息格式）", "附图中的反馈回路"]
+    },
+    {
+      "id": "vision-architecture",
+      "paper": "arXiv:2103.14030 (Swin Transformer)",
+      "input": "inputs/2103.14030.pdf",
+      "prompt": "这是我们的论文，假设尚未以任何形式公开。请生成完整的专利申请文件（含附图）。",
+      "focus": ["模型结构的充分公开（模块、层级、连接关系）", "技术效果数值与论文一致", "参数是否只在必要时写入权利要求"]
+    },
+    {
+      "id": "audio-generation",
+      "paper": "arXiv:2301.12503 (AudioLDM)",
+      "input": "inputs/2301.12503.pdf",
+      "prompt": "这是我们的论文，假设尚未以任何形式公开。请写成中国发明专利申请文件，要 Word 和 PDF。",
+      "focus": ["训练与推理流程的充分公开", "上位概括的分支支撑", "证据边界与措辞强度"]
+    },
+    {
+      "id": "systems-efficiency",
+      "paper": "arXiv:2205.14135 (FlashAttention)",
+      "input": "inputs/2205.14135.pdf",
+      "prompt": "这是我们的论文，假设尚未以任何形式公开。请生成完整的专利申请文件（含附图）。",
+      "focus": ["技术性：与计算机内部结构（显存层级、IO）的关联", "算法步骤与硬件效果的对应"]
+    },
+    {
+      "id": "forecasting-subject-matter",
+      "paper": "arXiv:1912.09363 (Temporal Fusion Transformers)",
+      "input": "inputs/1912.09363.pdf",
+      "prompt": "这是我们的论文，帮我写成专利申请文件。",
+      "focus": ["客体风险提示（金融/零售预测受经济规律支配）", "公开状态判断（论文已公开时应明确提示新颖性风险）"]
+    }
+  ]
+}

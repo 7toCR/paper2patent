@@ -1004,8 +1004,19 @@
 
 - `skills/paper2patent/`：标准 Skills 目录，作为本仓库维护的主版本。
 - `.claude/skills/paper2patent/`：Claude Code 项目级 Skill 镜像，与主版本保持同步。
-- `skills/paper2patent/references/`：保存输入要求、文本转换、权利要求与说明书规则、附图生成、文档生成和质量检查清单。
-- `skills/paper2patent/scripts/`：提供专利附图、DOCX 申请文件和 PDF 导出的辅助脚本。
+- `skills/paper2patent/references/`：
+  - `patentability-and-disclosure.md`：论文公开与新颖性（宽限期）、AI/算法发明的客体与充分公开要求（2026年1月1日施行的《专利审查指南》）
+  - `patent-drafting-standard.md`：五部分撰写规范与"论文→专利"对照表
+  - `claims-drafting.md`：权利要求布局（方法 + 装置 + 电子设备 + 存储介质）、用语与引用规则
+  - `drawing-generation.md`、`document-generation.md`、`input-requirements.md`、`quality-checklist.md`
+- `skills/paper2patent/scripts/`：
+  - `check_patent_draft.py`：自动形式检查（禁用词、单句号、引用关系、引用基础、摘要300字、附图编号与附图标记一致性等）
+  - `generate_patent_drawings.py`：按节点/连线生成黑白专利附图（SVG + PNG），支持分支、汇合、判断与回环
+  - `generate_patent_docx.py`：生成申请文件 DOCX（五部分分页）和独立的《撰写说明》
+  - `export_patent_pdf.py`：LibreOffice 导出 PDF，并可生成逐页预览图
+- `skills/paper2patent/assets/example_patent_content.json`：完整的结构化内容示例
+
+运行环境：Python 3.9+；附图需要 Pillow 和一种中文字体（Windows/macOS 自带字体或 Noto CJK 均可，也可用环境变量 `PATENT_CJK_FONT` 指定）；PDF 需要 LibreOffice。
 
 ### 安装与部署
 
@@ -1032,6 +1043,13 @@ macOS / Linux 示例：
 cp -R skills/paper2patent ~/.codex/skills/
 ```
 
+**升级**：本仓库没有版本号，升级即 `git pull` 后重新复制。请先删除旧目录再复制，避免已删除的旧文件残留：
+
+```bash
+git pull
+rm -rf ~/.codex/skills/paper2patent && cp -R skills/paper2patent ~/.codex/skills/
+```
+
 安装后，在 Codex 中直接说明任务或者使用$查找paper2patent使用：
 1.例如“使用 paper2patent skill，将这篇论文生成中国发明专利申请书 DOCX/PDF”。
 2.$paper2patent “将这篇论文生成中国发明专利申请书 DOCX/PDF”。
@@ -1048,11 +1066,21 @@ Cursor 可结合本仓库的 `.cursor/rules/paper2patent.mdc` 与 `.claude/skill
 
 Windsurf 可使用 `.windsurf/rules/paper2patent.md` 作为项目规则，并引用 `skills/paper2patent/` 中的完整工作流。适合在仓库内直接处理专利文本、脚本和生成文件。
 
+**Claude 桌面版 / 网页版**
+
+将 `skills/paper2patent/` 文件夹打包为 zip，在 Claude 设置的 Skills 区域上传；升级时上传新的 zip 覆盖即可。
+
 ### 使用示例
 
 - “请使用 paper2patent skill，将这篇论文生成中国发明专利申请书 DOCX/PDF。”
 - “请基于论文原文检查这份专利草稿是否存在编造内容。”
 - “根据已生成的权利要求书和说明书生成黑白专利附图。”
+- “我的论文已经上传 arXiv 了，还能申请专利吗？”
+
+生成结果包括：`<名称>_专利申请文件.docx/.pdf`（仅含五部分申请文本）、`<名称>_专利申请文件_撰写说明.docx`（开头是待补充材料清单，其后为公开与新颖性风险、权利要求特征分拣与布局、权利要求—论文出处对照、附图来源、自动检查结果）以及各附图的 SVG/PNG。生成内容为供专利代理师审核的草稿，不构成法律意见。
+
+更新记录见 [CHANGELOG.md](CHANGELOG.md)。评估方法（评分细则、盲评流程、结构检查脚本）见 [evals/README.md](evals/README.md)。
+
 ---
 
 # 致谢 / Acknowledgments
