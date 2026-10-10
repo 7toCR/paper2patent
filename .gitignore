@@ -22,3 +22,5 @@ Thumbs.db
 # Evaluation inputs and outputs (papers may be unpublished)
 evals/inputs/
 evals/runs/
+gudie/
+reference/
